@@ -71,13 +71,22 @@ public class MovieCollection {
         // obtain the title, cast, director, tagline,
         // keywords, overview, runtime (int), genres,
         // user rating (double), year (int), and revenue (int)
-
-
+        String title = movieFromCSV[0];
+        String cast = movieFromCSV[1];
+        String director = movieFromCSV[2];
+        String tagline = movieFromCSV[3];
+        String keywords = movieFromCSV[4];
+        String overview = movieFromCSV[5];
+        int runtime = Integer.parseInt(movieFromCSV[6]);
+        String genre = movieFromCSV[7];
+        double userRating = Double.parseDouble(movieFromCSV[8]);
+        int year = Integer.parseInt(movieFromCSV[9]);
+        int revenue = Integer.parseInt(movieFromCSV[10]);
         // create a Movie object with the row data:
-
+        Movie nextMovie = new Movie(title,cast, director, tagline, keywords,overview, runtime, genre, userRating, year, revenue);
 
         // add the Movie to movies:
-
+        movies.add(nextMovie);
 
       }
       bufferedReader.close();
@@ -148,6 +157,19 @@ public class MovieCollection {
       listToSort.set(possibleIndex, temp);
     }
   }
+//  private void sortCast(ArrayList<String> listToSort) {
+//    for (int j = 1; j < listToSort.size(); j++) {
+//      String temp = listToSort.get(j);
+//      String tempTitle = temp.getTitle();
+//
+//      int possibleIndex = j;
+//      while (possibleIndex > 0 && tempTitle.compareTo(listToSort.get(possibleIndex - 1).getTitle()) < 0) {
+//        listToSort.set(possibleIndex, listToSort.get(possibleIndex - 1));
+//        possibleIndex--;
+//      }
+//      listToSort.set(possibleIndex, temp);
+//    }
+//  }
   
   private void displayMovieInfo(Movie movie) {
     System.out.println();
@@ -163,11 +185,80 @@ public class MovieCollection {
   }
 
   private void searchKeywords() {
-    /* TASK 3: IMPLEMENT ME */
+    System.out.print("Enter a keyword search term: ");
+    String searchTerm = scanner.nextLine();
+
+    // prevent case sensitivity
+    searchTerm = searchTerm.toLowerCase();
+
+    // arraylist to hold search results
+    ArrayList<Movie> results = new ArrayList<Movie>();
+
+    // search through ALL movies in collection
+    for (int i = 0; i < movies.size(); i++) {
+      String moviekeywords = movies.get(i).getKeywords();
+      moviekeywords = moviekeywords.toLowerCase();
+
+      if (moviekeywords.contains(searchTerm)) {
+        //add the Movie objest to the results list
+        results.add(movies.get(i));
+      }
+    }
+    if (results.size() > 0) {
+      // sort the results by title
+      sortResults(results);
+
+      // now, display them all to the user
+      for (int i = 0; i < results.size(); i++) {
+        String title = results.get(i).getTitle();
+
+        // this will print index 0 as choice 1 in the results list; better for user!
+        int choiceNum = i + 1;
+        System.out.println("" + choiceNum + ". " + title);
+      }
+
+      System.out.println("Which movie would you like to learn more about?");
+      System.out.print("Enter number: ");
+      int choice = scanner.nextInt();
+      scanner.nextLine();
+      Movie selectedMovie = results.get(choice - 1);
+      displayMovieInfo(selectedMovie);
+      System.out.println("\n ** Press Enter to Return to Main Menu **");
+      scanner.nextLine();
+    } else {
+      System.out.println("\nNo movie titles match that search term!");
+      System.out.println("** Press Enter to Return to Main Menu **");
+      scanner.nextLine();
+    }
   }
 
   private void searchCast() {
-    /* TASK 4: IMPLEMENT ME */
+    System.out.print("Enter a cast: ");
+    String searchTerm = scanner.nextLine();
+
+    // prevent case sensitivity
+    searchTerm = searchTerm.toLowerCase();
+
+    ArrayList<String> allCast = new ArrayList<String>();
+    ArrayList<String> searchCast = new ArrayList<String>();
+    ArrayList<Movie> movie= new ArrayList<Movie>();
+    for(int i = 0; i < movies.size(); i++){
+      String [] cast = (movies.get(i).getCast().split("\\|"));
+      for (int j = 0; j <cast.length; j++){
+        if(allCast.contains(cast[j])){
+
+        }else{
+          allCast.add(cast[j]);
+        }
+      }
+    }
+    System.out.print(allCast);
+    for(int k = 0; k<allCast.size(); k++){
+      if(allCast.get(k).contains(searchTerm)){
+        searchCast.add(allCast.get(k));
+      }
+
+    }
   }
   
   private void listGenres() {
