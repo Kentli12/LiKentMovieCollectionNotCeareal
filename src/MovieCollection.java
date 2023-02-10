@@ -157,20 +157,20 @@ public class MovieCollection {
       listToSort.set(possibleIndex, temp);
     }
   }
-//  private void sortCast(ArrayList<String> listToSort) {
-//    for (int j = 1; j < listToSort.size(); j++) {
-//      String temp = listToSort.get(j);
-//      String tempTitle = temp.getTitle();
-//
-//      int possibleIndex = j;
-//      while (possibleIndex > 0 && tempTitle.compareTo(listToSort.get(possibleIndex - 1).getTitle()) < 0) {
-//        listToSort.set(possibleIndex, listToSort.get(possibleIndex - 1));
-//        possibleIndex--;
-//      }
-//      listToSort.set(possibleIndex, temp);
-//    }
-//  }
-  
+  private void sortCast(ArrayList<String> listToSort) {
+    for (int j = 1; j < listToSort.size(); j++) {
+      String temp = listToSort.get(j);
+      String tempTitle = temp;
+
+      int possibleIndex = j;
+      while (possibleIndex > 0 && tempTitle.compareTo(listToSort.get(possibleIndex - 1)) < 0) {
+        listToSort.set(possibleIndex, listToSort.get(possibleIndex - 1));
+        possibleIndex--;
+      }
+      listToSort.set(possibleIndex, temp);
+    }
+  }
+
   private void displayMovieInfo(Movie movie) {
     System.out.println();
     System.out.println("Title: " + movie.getTitle());
@@ -241,28 +241,137 @@ public class MovieCollection {
 
     ArrayList<String> allCast = new ArrayList<String>();
     ArrayList<String> searchCast = new ArrayList<String>();
-    ArrayList<Movie> movie= new ArrayList<Movie>();
-    for(int i = 0; i < movies.size(); i++){
-      String [] cast = (movies.get(i).getCast().split("\\|"));
-      for (int j = 0; j <cast.length; j++){
-        if(allCast.contains(cast[j])){
+    ArrayList<Movie> results = new ArrayList<Movie>();
+    for (int i = 0; i < movies.size(); i++) {
+      String[] cast = (movies.get(i).getCast().split("\\|"));
+      for (int j = 0; j < cast.length; j++) {
+        if (allCast.contains(cast[j])) {
 
-        }else{
+        } else {
           allCast.add(cast[j]);
         }
       }
     }
-    System.out.print(allCast);
-    for(int k = 0; k<allCast.size(); k++){
-      if(allCast.get(k).contains(searchTerm)){
+    for (int k = 0; k < allCast.size(); k++) {
+      if (allCast.get(k).toLowerCase().contains(searchTerm)) {
         searchCast.add(allCast.get(k));
       }
-
     }
-  }
-  
+
+    if (searchCast.size() > 0) {
+      sortCast(searchCast);
+
+      // now, display them all to the user
+      for (int i = 0; i < searchCast.size(); i++) {
+        String title = searchCast.get(i);
+
+        // this will print index 0 as choice 1 in the results list; better for user!
+        int choiceNum = i + 1;
+        System.out.println("" + choiceNum + ". " + title);
+      }
+      System.out.println("Which would you like to see all the movies for");
+      System.out.print("Enter number: ");
+      int choice = scanner.nextInt();
+      scanner.nextLine();
+
+      for (int p = 0; p < movies.size(); p++) {
+        if (movies.get(p).getCast().toLowerCase().contains(searchCast.get(choice-1).toLowerCase())){
+          results.add(movies.get(p));
+        }
+      }
+
+      if (results.size() > 0) {
+        // sort the results by title
+        sortResults(results);
+      }
+        // now, display them all to the user
+        for (int i = 0; i < results.size(); i++) {
+          String title = results.get(i).getTitle();
+
+          // this will print index 0 as choice 1 in the results list; better for user!
+          int choiceNum = i + 1;
+          System.out.println("" + choiceNum + ". " + title);
+        }
+
+        System.out.println("Which movie would you like to learn more about?");
+        System.out.print("Enter number: ");
+        choice = scanner.nextInt();
+        scanner.nextLine();
+        Movie selectedMovie = results.get(choice - 1);
+        displayMovieInfo(selectedMovie);
+        System.out.println("\n ** Press Enter to Return to Main Menu **");
+        scanner.nextLine();
+      } else {
+        System.out.println("\nNo movie titles match that search term!");
+        System.out.println("** Press Enter to Return to Main Menu **");
+        scanner.nextLine();
+      }
+    }
+
+
   private void listGenres() {
-    /* TASK 5: IMPLEMENT ME */
+    ArrayList <String> genreList = new ArrayList<String>();
+    ArrayList<Movie> results = new ArrayList<Movie>();
+    for(int i = 0; i<movies.size(); i++){
+      String[] genre = movies.get(i).getGenres().split("\\|");
+      for(int j = 0; j<genre.length; j++){
+        if(genreList.contains(genre[j])){
+
+        }else{
+          genreList.add(genre[j]);
+        }
+      }
+    }
+    if(genreList.size()>0){
+      sortCast(genreList);
+
+      for (int i = 0; i < genreList.size(); i++) {
+        String title = genreList.get(i);
+
+        // this will print index 0 as choice 1 in the results list; better for user!
+        int choiceNum = i + 1;
+        System.out.println("" + choiceNum + ". " + title);
+      }
+      System.out.println("Which would you like to see all the movies for");
+      System.out.print("Enter number: ");
+      int choice = scanner.nextInt();
+      scanner.nextLine();
+      for(int k = 0; k < movies.size();k++){
+        if(movies.get(k).getGenres().toLowerCase().contains(genreList.get(choice-1).toLowerCase())){
+          results.add(movies.get(k));
+        }
+      }
+      if (results.size() > 0) {
+        // sort the results by title
+        sortResults(results);
+      }
+      // now, display them all to the user
+      for (int i = 0; i < results.size(); i++) {
+        String title = results.get(i).getTitle();
+
+        // this will print index 0 as choice 1 in the results list; better for user!
+        int choiceNum = i + 1;
+        System.out.println("" + choiceNum + ". " + title);
+      }
+
+      System.out.println("Which movie would you like to learn more about?");
+      System.out.print("Enter number: ");
+      choice = scanner.nextInt();
+      scanner.nextLine();
+      Movie selectedMovie = results.get(choice - 1);
+      displayMovieInfo(selectedMovie);
+      System.out.println("\n ** Press Enter to Return to Main Menu **");
+      scanner.nextLine();
+    } else {
+      System.out.println("\nNo movie titles match that search term!");
+      System.out.println("** Press Enter to Return to Main Menu **");
+      scanner.nextLine();
+    }
+
+
+    // prevent case sensitivity
+//    searchTerm = searchTerm.toLowerCase();
+//    String[] genre =
   }
   
   private void listHighestRated() {
